@@ -1,6 +1,37 @@
-set nocompatible
+" .vimrc
+" Jonathan Lowe
+" 10/21/2018
+"
+" vim settings
 
-"filetype off                  " required
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Non plugin settings
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+set nocompatible
+filetype off                  " required
+
+" Shows line number and syntax hightliting
+set number
+syntax on
+
+" Deals with tab sillyness for default settings
+set expandtab
+set tabstop=4
+set shiftwidth=4
+
+" Changes tab settings for specific languages
+autocmd Filetype ocaml setlocal expandtab tabstop=2 shiftwidth=2
+autocmd Filetype ruby setlocal expandtab tabstop=2 shiftwidth=2
+
+" Vim mappings
+nnoremap <C-J> <C-W><C-J>
+nnoremap <C-K> <C-W><C-K>
+nnoremap <C-L> <C-W><C-L>
+nnoremap <C-H> <C-W><C-H>
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Plugin Installation
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " set the runtime path to include Vundle and initialize
 set rtp+=~/.vim/bundle/Vundle.vim
@@ -10,15 +41,18 @@ Plugin 'VundleVim/Vundle.vim'            " Vundle updates itself
 Plugin 'itchyny/lightline.vim'           " The nice bar below
 Plugin 'junegunn/fzf'                    " Fuzy finder pt1
 Plugin 'junegunn/fzf.vim'                " Fuzy finder pt2
-Plugin 'w0rp/ale'                        " Async linter Need to install linter though
-Plugin 'airblade/vim-gitgutter'          " Shows changes in vim for git !!Probation!!
+if v:version < 800
+    Plugin 'vim-syntastic/syntastic'     " Syntax Checker
+else
+    Plugin 'w0rp/ale'                    " Async linter Need to install linter though
+endif
+Plugin 'airblade/vim-gitgutter'          " Shows changes in vim for git
 Plugin 'tpope/vim-eunuch'                " Adds commands like mkdir to vim
 Plugin 'editorconfig/editorconfig-vim'   " Allows editor configs for different projects!
 Plugin 'scrooloose/nerdtree'             " Adds filetree to left
 Plugin 'Xuyuanp/nerdtree-git-plugin'
 Plugin 'bronson/vim-trailing-whitespace' " Highlites trailing space in red
-" Plugin 'nathanaelkane/vim-indent-guides' " Shows indentation
-" Plugin 'terryma/vim-multiple-cursors'    " Allows multiple cursers
+Plugin 'Valloric/YouCompleteMe'          " Autocompletion
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -35,18 +69,20 @@ filetype plugin indent on    " required
 " see :h vundle for more details or wiki for FAQ
 " Put your non-Plugin stuff after this line
 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Plugin settings
+"
+" Lightline settings
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
 " Shows cool status bar
 set laststatus=2
+set noshowmode
 
-" Shows line number
-set number
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" NERDTREE settings
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-" Deals with tab sillyness
-set expandtab
-set tabstop=4
-set shiftwidth=4
-
-" Nerdtree settings
 " autocmd vimenter * NERDTree " Open by default
 autocmd StdinReadPre * let s:std_in=1 " Open if no file is specified
 autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
@@ -63,10 +99,37 @@ let g:NERDTreeDirArrowCollapsible = '|'
 " CTL+n is now nerdtree toggle
 map <C-n> :NERDTreeToggle<CR>
 
-" Enable guides by default
-let g:indent_guides_enable_on_vim_startup = 1
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Ale settings
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+if v:version >= 800
 
+"let g:ale_set_highlights = 0
+let g:airline#extensions#ale#enabled = 1
+
+endif
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Syntastic settings
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+if v:version < 800
+
+let g:syntastic_python_checkers = ['pylint']
+
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+
+endif
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " OPAM SETTINGS
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " ## added by OPAM user-setup for vim / base ## 93ee63e278bdfc07d1139a748ed3fff2 ## you can edit, but keep this line
 let s:opam_share_dir = system("opam config var share")
