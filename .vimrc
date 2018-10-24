@@ -39,13 +39,14 @@ call vundle#begin()
 
 Plugin 'VundleVim/Vundle.vim'            " Vundle updates itself
 Plugin 'itchyny/lightline.vim'           " The nice bar below
-Plugin 'itchyny/vim-gitbranch'           " The nice bar below
+Plugin 'itchyny/vim-gitbranch'           " Adds git info to bar below
 Plugin 'junegunn/fzf'                    " Fuzy finder pt1
 Plugin 'junegunn/fzf.vim'                " Fuzy finder pt2
 if v:version < 800
     Plugin 'vim-syntastic/syntastic'     " Syntax Checker
 else
     Plugin 'w0rp/ale'                    " Async linter Need to install linter though
+    Plugin 'maximbaz/lightline-ale'      " Adds ale info to bar below
 endif
 Plugin 'airblade/vim-gitgutter'          " Shows changes in vim for git
 Plugin 'tpope/vim-eunuch'                " Adds commands like mkdir to vim
@@ -82,17 +83,41 @@ set laststatus=2
 set noshowmode
 
 let g:lightline = {
-      \ 'active': {
-      \   'left': [ [ 'mode', 'paste' ],
-      \             [ 'gitbranch', 'readonly', 'filename', 'modified' ] ]
-      \ },
-      \ 'component_function': {
-      \   'gitbranch': 'gitbranch#name'
-      \ },
-      \ }
+    \ 'active': {
+    \   'left': [ [ 'mode', 'paste' ],
+    \             [ 'gitbranch', 'readonly', 'filename', 'modified' ] ]
+    \ },
+    \ 'component_function': {
+    \   'gitbranch': 'gitbranch#name'
+    \ },
+    \ }
 
-let g:lightline.separator = { 'left': '⮀', 'right': '⮂' }
+"let g:lightline.separator = { 'left': '⮀', 'right': '⮂' }
 let g:lightline.subseparator = { 'left': '⮁', 'right': '⮃' }
+
+" Ale lightline settings
+if v:version >= 800
+let g:lightline.component_expand = {
+        \  'linter_checking': 'lightline#ale#checking',
+        \  'linter_warnings': 'lightline#ale#warnings',
+        \  'linter_errors': 'lightline#ale#errors',
+        \  'linter_ok': 'lightline#ale#ok',
+        \ }
+
+    let g:lightline.component_type = {
+        \  'linter_checking': 'left',
+        \  'linter_warnings': 'warning',
+        \  'linter_errors': 'error',
+        \  'linter_ok': 'left',
+        \ }
+
+    let g:lightline.active.right = [
+        \  [ 'linter_checking', 'linter_errors', 'linter_warnings', 'linter_ok' ],
+		\  [ 'percent' ],
+		\  [ 'fileformat', 'fileencoding', 'filetype' ],
+        \  [ 'lineinfo' ]
+        \ ]
+endif
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " NERDTREE settings
