@@ -39,6 +39,7 @@ call vundle#begin()
 
 Plugin 'VundleVim/Vundle.vim'            " Vundle updates itself
 Plugin 'itchyny/lightline.vim'           " The nice bar below
+Plugin 'itchyny/vim-gitbranch'           " The nice bar below
 Plugin 'junegunn/fzf'                    " Fuzy finder pt1
 Plugin 'junegunn/fzf.vim'                " Fuzy finder pt2
 if v:version < 800
@@ -53,6 +54,7 @@ Plugin 'scrooloose/nerdtree'             " Adds filetree to left
 Plugin 'Xuyuanp/nerdtree-git-plugin'
 Plugin 'bronson/vim-trailing-whitespace' " Highlites trailing space in red
 Plugin 'Valloric/YouCompleteMe'          " Autocompletion
+Plugin 'reasonml-editor/vim-reason-plus'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -78,6 +80,19 @@ filetype plugin indent on    " required
 " Shows cool status bar
 set laststatus=2
 set noshowmode
+
+let g:lightline = {
+      \ 'active': {
+      \   'left': [ [ 'mode', 'paste' ],
+      \             [ 'gitbranch', 'readonly', 'filename', 'modified' ] ]
+      \ },
+      \ 'component_function': {
+      \   'gitbranch': 'gitbranch#name'
+      \ },
+      \ }
+
+let g:lightline.separator = { 'left': '⮀', 'right': '⮂' }
+let g:lightline.subseparator = { 'left': '⮁', 'right': '⮃' }
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " NERDTREE settings
