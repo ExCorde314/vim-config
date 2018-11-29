@@ -4,11 +4,12 @@
 "
 " vim settings
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Non plugin settings
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 set nocompatible
 filetype off                  " required
+set backspace=indent,eol,start
 
 " Shows line number and syntax hightliting
 set number
@@ -20,6 +21,10 @@ set tabstop=4
 set shiftwidth=4
 
 " Changes tab settings for specific languages
+autocmd Filetype sh set expandtab&
+autocmd Filetype cpp set colorcolumn=80 |
+                     highlight OverLength ctermbg=red ctermfg=white guibg=red |
+                     match OverLength /\%81v.\+/
 autocmd Filetype ocaml setlocal expandtab tabstop=2 shiftwidth=2
 autocmd Filetype ruby setlocal expandtab tabstop=2 shiftwidth=2
 
@@ -29,9 +34,9 @@ nnoremap <C-K> <C-W><C-K>
 nnoremap <C-L> <C-W><C-L>
 nnoremap <C-H> <C-W><C-H>
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Plugin Installation
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " set the runtime path to include Vundle and initialize
 set rtp+=~/.vim/bundle/Vundle.vim
@@ -54,8 +59,10 @@ Plugin 'editorconfig/editorconfig-vim'   " Allows editor configs for different p
 Plugin 'scrooloose/nerdtree'             " Adds filetree to left
 Plugin 'Xuyuanp/nerdtree-git-plugin'
 Plugin 'bronson/vim-trailing-whitespace' " Highlites trailing space in red
-Plugin 'Valloric/YouCompleteMe'          " Autocompletion
+Plugin 'majutsushi/tagbar'               " Code Structure on right
 Plugin 'reasonml-editor/vim-reason-plus'
+Plugin 'chriskempson/base16-vim'
+Plugin 'mark-westerhof/vim-lightline-base16'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -72,11 +79,11 @@ filetype plugin indent on    " required
 " see :h vundle for more details or wiki for FAQ
 " Put your non-Plugin stuff after this line
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Plugin settings
 "
 " Lightline settings
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " Shows cool status bar
 set laststatus=2
@@ -94,6 +101,8 @@ let g:lightline = {
 
 "let g:lightline.separator = { 'left': '⮀', 'right': '⮂' }
 let g:lightline.subseparator = { 'left': '⮁', 'right': '⮃' }
+
+let g:lightline.colorscheme = 'base16_classic_dark'
 
 " Ale lightline settings
 if v:version >= 800
@@ -119,9 +128,26 @@ let g:lightline.component_expand = {
         \ ]
 endif
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" color scheme settings
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+let base16colorspace=256
+colorscheme base16-classic-dark
+"colorscheme base16-tomorrow-night
+"colorscheme base16-railscasts
+"colorscheme base16-default-dark
+set termguicolors
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" TAGBAR settings
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+nmap <C-S-t> :TagbarToggle<CR>
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " NERDTREE settings
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " autocmd vimenter * NERDTree " Open by default
 autocmd StdinReadPre * let s:std_in=1 " Open if no file is specified
@@ -139,19 +165,22 @@ let g:NERDTreeDirArrowCollapsible = '|'
 " CTL+n is now nerdtree toggle
 map <C-n> :NERDTreeToggle<CR>
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Ale settings
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 if v:version >= 800
 
 "let g:ale_set_highlights = 0
 let g:airline#extensions#ale#enabled = 1
 
+highlight ALEError ctermbg=none cterm=underline
+highlight ALEWarning ctermbg=none cterm=underline
+
 endif
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Syntastic settings
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 if v:version < 800
 
 let g:syntastic_python_checkers = ['pylint']
@@ -167,9 +196,9 @@ let g:syntastic_check_on_wq = 0
 
 endif
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " OPAM SETTINGS
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " ## added by OPAM user-setup for vim / base ## 93ee63e278bdfc07d1139a748ed3fff2 ## you can edit, but keep this line
 let s:opam_share_dir = system("opam config var share")
